@@ -18,6 +18,8 @@ class GraphSchemaScanner {
 
         val DENSE_NODE = 50
 
+        var samples:Long = 10
+
         @JvmStatic fun from(db: GraphDatabaseService, label: Label): MetaData {
             val metaData = MetaData(label.name())
             inspectIndexes(metaData, db, label)
@@ -108,7 +110,7 @@ class GraphSchemaScanner {
         }
 
         private fun sampleNodes(md: MetaData, db: GraphDatabaseService, label: Label) {
-            var count = 10
+            var count = samples
             val nodes = db.findNodes(label)
             while (nodes.hasNext() && count-- > 0) {
                 val node = nodes.next()

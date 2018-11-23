@@ -68,6 +68,18 @@ class GraphQLProcedure {
         }
     }
 
+    /**
+     * regenerate graphql schema, optionally with a given sample number per label.
+     * if not provided a full scan is performed.
+     */
+    @Procedure("graphql.generateSchema", mode=Mode.WRITE)
+    fun generateSchema(@Name("sample", defaultValue = "-1") samples: Long) : Stream<StringResult> {
+        GraphSchemaScanner.samples = if (samples==-1L) Long.MAX_VALUE else samples
+        GraphSchemaScanner.deleteIdl(db!!)
+        val schema = GraphQLSchemaBuilder.buildSchema(db!!)
+        return Stream.of(StringResult(SchemaPrinter().print(schema)))
+    }
+
     @UserFunction( "graphql.getIdl")
     fun getIdl() : String {
         val schema = GraphQLSchemaBuilder.buildSchema(db!!)

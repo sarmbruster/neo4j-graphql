@@ -109,11 +109,28 @@ image::{img}/graphql.schema.jpg[width=600]
 
 Using
 
+[source,cypher]
 ----
 RETURN graphql.getIdl()
 ----
 
 you'll get back a string representation of the currently used schema.
+
+To auto-generate a schema inferred from graph contents you might use
+
+[source,cypher]
+----
+call graphql.generateSchema()
+----
+
+This will perform a full graph scan and touch every node. Optionally you can reduce the number of scanned nodes per label:
+
+[source,cypher]
+----
+call graphql.generateSchema(100)
+----
+
+
 
 === Auto-Generated Query Types
 

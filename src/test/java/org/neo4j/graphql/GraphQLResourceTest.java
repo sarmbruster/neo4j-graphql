@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.neo4j.graphdb.*;
 import org.neo4j.harness.ServerControls;
 import org.neo4j.harness.TestServerBuilders;
+import org.neo4j.helpers.collection.Iterators;
 import org.neo4j.test.server.HTTP;
 
 import java.net.URL;
@@ -189,8 +190,13 @@ public class GraphQLResourceTest {
                 "}"));
         assertTrue(idl.contains("input _MovieFilter {"));
         assertTrue(idl.contains("input _PersonFilter {"));
-        System.out.println(idl);
+        //System.out.println(idl);
         assertTrue(idl.length() > 2000);
+
+        String schema = Iterators.single(neo4j.graph().execute("call graphql.generateSchema()").columnAs("value"));
+        schema = schema.replaceAll("(?m)^\\s*#.+\\n","");
+        assertEquals(idl, schema);
+
     }
 
     private void testCypherCall(String call) {
@@ -305,4 +311,5 @@ public class GraphQLResourceTest {
         System.out.println("result = " + result);
         return result;
     }
+
 }
